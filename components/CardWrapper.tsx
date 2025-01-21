@@ -2,6 +2,7 @@ import React from 'react'
 import { Card, CardContent, CardFooter, CardHeader } from './ui/card';
 import LoginSocial from './auth/LoginSocial';
 import Link from 'next/link';
+import { Button } from './ui/button';
 
 interface CardWrapperProps {
     children: React.ReactNode;
@@ -29,7 +30,9 @@ const CardWrapper = ({
             </CardFooter>
         )}
         <CardFooter className='w-full flex items-center justify-center' >
-        <Link href={buttonHref}>{footerLabel}</Link>
+            <Button variant='link' className='text-xs'>
+                <Link href={buttonHref}>{footerLabel}</Link>
+            </Button>
         </CardFooter>
     </Card>
   )
