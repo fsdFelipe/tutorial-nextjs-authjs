@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import CardWrapper from '../CardWrapper'
 import { useForm } from 'react-hook-form'
 import { LoginSchema } from '@/schemas'
@@ -8,8 +8,12 @@ import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
+import FormSuccess from './FormSuccess'
+import FormError from './FormError'
 
 const LoginForm = () => {
+  const [error, setError] = useState<string | undefined>()
+  const [success, setSuccess] = useState<string | undefined>()
   //Inicializa o useForm com o schema de validação definido em LoginSchema
   const form = useForm<z.infer<typeof LoginSchema>>({
     // usando zodResolver para integrar a validação com Zod.
@@ -23,6 +27,14 @@ const LoginForm = () => {
  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     //exibindo os valores fornecidos pelo usuario no console do browser
     console.log(values)
+    // Simulando uma resposta de sucesso ou erro
+    if (values.email === 'test@example.com' && values.password === '1234') {
+      setSuccess('Login realizado com sucesso!');
+      setError(undefined);  // Limpa a mensagem de erro caso o login seja bem-sucedido
+    } else {
+      setError('Credenciais inválidas, tente novamente.');
+      setSuccess(undefined);  // Limpa a mensagem de sucesso em caso de erro
+    }
 }
 
   return (
@@ -74,6 +86,8 @@ const LoginForm = () => {
                     )}
                 />
             </div>
+            <FormSuccess message={success} />
+            <FormError message={error} />
             {/*Botão login*/}
             <Button type='submit' className='w-full'>
                <span>Login</span>
