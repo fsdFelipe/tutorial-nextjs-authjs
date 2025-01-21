@@ -10,6 +10,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '
 import FormError from './FormError'
 import FormSuccess from './FormSuccess'
 import { Input } from '../ui/input'
+import { register } from '@/app/actions/register'
 
 const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>()
@@ -25,10 +26,18 @@ const RegisterForm = () => {
         name: ""
     },
 })
-//onSubmit inicial
+
+//onSubmit chama a função do arquivo regisrer q registra o novo usuario
 const onSubmit = (values: z.infer<typeof RegisterSchema>) =>{
-    //exibindo os valores fornecidos pelo usuario no console do browser
-    console.log(values)
+    setError("")
+    setSuccess("")
+    startTransition(() => {
+        register(values)
+            .then((data) => {
+                setError(data.error)
+                setSuccess(data.success)
+            })
+    })
 }
 
 
