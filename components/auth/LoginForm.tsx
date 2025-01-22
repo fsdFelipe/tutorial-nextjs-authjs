@@ -11,6 +11,7 @@ import { Input } from '../ui/input'
 import FormSuccess from './FormSuccess'
 import FormError from './FormError'
 import { login } from '@/app/actions/login'
+import Link from 'next/link'
 
 const LoginForm = () => {
   const [error, setError] = useState<string | undefined>()
@@ -85,6 +86,9 @@ const LoginForm = () => {
                                     type='password'
                                 />
                                 </FormControl>
+                                <Button size='sm' variant='link' asChild className='px-0 font-normal'>
+                                    <Link href='/auth/reset'>Esqueceu a senha?</Link>
+                                </Button>
                             <FormMessage />
                         </FormItem>
                     )}

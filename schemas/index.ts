@@ -34,3 +34,9 @@ export const RegisterSchema = z.object({
         message: "A senha deve ter pelo menos um caractere especial"
     }), */
 })
+
+export const ResetSchema = z.object({
+    email: z.string().email({
+      message: "Email é obrigatório",
+    }),
+  });
