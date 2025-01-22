@@ -4,6 +4,7 @@ import * as z  from "zod"
 import bcrypt from 'bcryptjs'
 import { getUserByEmail } from "@/data/user"
 import { db } from "@/lib/db"
+import { generateVerificationToken } from "@/lib/tokens"
 
 // Função para registrar um novo usuário
 export const register = async (values : z.infer<typeof RegisterSchema>) =>{
@@ -35,6 +36,10 @@ export const register = async (values : z.infer<typeof RegisterSchema>) =>{
           password: hashedPassword, 
         },
       });
+
+      //gerando o token apos o usaurio se cadastrar
+      const verificationToken = await generateVerificationToken(email)
+      console.log(verificationToken) //exibir token no console
   
       // Retorna sucesso se o cadastro for realizado
       return { success: "Cadastro realizado com sucesso" };
