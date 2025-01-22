@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useTransition } from 'react'
 import CardWrapper from '../CardWrapper'
 import { useForm } from 'react-hook-form'
 import { LoginSchema } from '@/schemas'
@@ -10,10 +10,13 @@ import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import FormSuccess from './FormSuccess'
 import FormError from './FormError'
+import { login } from '@/app/actions/login'
 
 const LoginForm = () => {
   const [error, setError] = useState<string | undefined>()
   const [success, setSuccess] = useState<string | undefined>()
+  const [isPending, startTransition] = useTransition()
+
   //Inicializa o useForm com o schema de validação definido em LoginSchema
   const form = useForm<z.infer<typeof LoginSchema>>({
     // usando zodResolver para integrar a validação com Zod.
@@ -25,16 +28,15 @@ const LoginForm = () => {
 })
  //onSubmit inicial
  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    //exibindo os valores fornecidos pelo usuario no console do browser
-    console.log(values)
-    // Simulando uma resposta de sucesso ou erro
-    if (values.email === 'test@example.com' && values.password === '1234') {
-      setSuccess('Login realizado com sucesso!');
-      setError(undefined);  // Limpa a mensagem de erro caso o login seja bem-sucedido
-    } else {
-      setError('Credenciais inválidas, tente novamente.');
-      setSuccess(undefined);  // Limpa a mensagem de sucesso em caso de erro
-    }
+    setError("")
+    setSuccess("")
+    startTransition(() => {
+    login(values)
+        .then((data) => {
+            setError(data.error)
+            setSuccess(data.success)
+        })
+    })
 }
 
   return (
@@ -61,6 +63,7 @@ const LoginForm = () => {
                             <FormControl>
                                 <Input
                                     {...field}
+                                    disabled={isPending}
                                     placeholder='exemplo@email.com'
                                     type='email'
                                     />
@@ -78,6 +81,7 @@ const LoginForm = () => {
                                 <FormControl>
                                 <Input
                                     {...field}
+                                    disabled={isPending}
                                     type='password'
                                 />
                                 </FormControl>
