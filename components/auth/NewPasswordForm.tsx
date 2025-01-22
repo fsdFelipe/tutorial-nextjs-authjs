@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import FormError from "./FormError";
 import FormSuccess from "./FormSuccess";
 import CardWrapper from "../CardWrapper";
+import { newPassword } from "@/app/actions/new-password";
 
 export const NewPasswordForm = () => {
   const searchParams = useSearchParams();
@@ -36,6 +37,13 @@ export const NewPasswordForm = () => {
   const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
     setError("");
     setSuccess("");
+    startTransition(() => {
+      newPassword(values, token)
+        .then((data) => {
+          setError(data?.error);
+          setSuccess(data?.success);
+        });
+    });
   };
   
   return (
