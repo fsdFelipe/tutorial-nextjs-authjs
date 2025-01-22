@@ -1,6 +1,7 @@
 'use server'
 import { signIn } from "@/auth"
 import { getUserByEmail } from "@/data/user"
+import { sendVerificationEmail } from "@/lib/nodeMailer"
 import { generateVerificationToken } from "@/lib/tokens"
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
 import { LoginSchema } from "@/schemas"
@@ -22,8 +23,11 @@ export const login = async (values : z.infer<typeof LoginSchema>) =>{
     }
     
     if(userExist.email && !userExist.emailVerified){
-        const vericationToken = await generateVerificationToken(userExist.email);
-        console.log(vericationToken)
+        const verificationToken = await generateVerificationToken(userExist.email);
+        
+        //enviando email
+        await sendVerificationEmail(verificationToken.email, verificationToken.token)
+
         return { error: 'Email não verificado ! verifique seu email'}
     }
 
