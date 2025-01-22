@@ -14,6 +14,7 @@ export const publicRoutes = [
 export const authRoutes = [
     '/auth/login',
     '/auth/register',
+    '/auth/error',
 ];
 /**
  * Prefix para api de rotas para autenticação
