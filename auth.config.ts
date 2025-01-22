@@ -45,9 +45,14 @@ export default {
               }
             },
   callbacks: {
-    async signIn({user}) {
+    async signIn({user, account}) {
+
+      //Permitir OAuth login
+      if(account?.provider !== 'credentials') return true;
+
       const userExist = await getUserById(user.id as string);
-      if(!userExist || !userExist.emailVerified){
+
+      if(!userExist?.emailVerified){
         return false
       }
       

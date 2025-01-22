@@ -1,5 +1,7 @@
 'use server'
 import { signIn } from "@/auth"
+import { getUserByEmail } from "@/data/user"
+import { generateVerificationToken } from "@/lib/tokens"
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
 import { LoginSchema } from "@/schemas"
 import { AuthError } from "next-auth"
@@ -13,6 +15,18 @@ export const login = async (values : z.infer<typeof LoginSchema>) =>{
     }
 
     const { email, password} = validatedFields.data;
+
+    const userExist = await getUserByEmail(email);
+    if(!userExist || !userExist.password){
+        return { error: "Email não cadastrado"}
+    }
+    
+    if(userExist.email && !userExist.emailVerified){
+        const vericationToken = await generateVerificationToken(userExist.email);
+        console.log(vericationToken)
+        return { error: 'Email não verificado ! verifique seu email'}
+    }
+
     try {
         await signIn("credentials", {
             email,
