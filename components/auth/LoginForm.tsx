@@ -17,6 +17,7 @@ const LoginForm = () => {
   const [error, setError] = useState<string | undefined>()
   const [success, setSuccess] = useState<string | undefined>()
   const [isPending, startTransition] = useTransition()
+  const [showTwoFactor, setShowTwoFactor] = useState(false)
 
   //Inicializa o useForm com o schema de validação definido em LoginSchema
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -24,7 +25,8 @@ const LoginForm = () => {
     resolver: zodResolver(LoginSchema),
     defaultValues: {
         email: '',
-        password: ''
+        password: '',
+        code:''
     }    
 })
  //onSubmit inicial
@@ -34,8 +36,17 @@ const LoginForm = () => {
     startTransition(() => {
     login(values)
         .then((data) => {
-            setError(data.error)
-            setSuccess(data.success)
+            if(data?.error){
+                form.reset()
+                setError(data?.error)
+            }
+            if (data?.success) {
+                form.reset();
+                setSuccess(data?.success);
+            }
+            if (data?.twoFactor) {
+                setShowTwoFactor(true);
+            }
         })
     })
 }
@@ -55,6 +66,30 @@ const LoginForm = () => {
             >
             <div className='space-y-4'>
                 {/*campo email*/}
+                {showTwoFactor && (
+                            <FormField
+                                control={form.control}
+                                name="code"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Two Factor Code</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                disabled={isPending}
+                                                placeholder="123456"
+                                            />
+                                        </FormControl>
+                                        <p className='text-green-500 font-normal text-sm'>
+                                            Código enviado para o email cadastrado
+                                        </p>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
+                    {!showTwoFactor && (
+                        <>
                 <FormField
                     control={form.control}
                     name='email'
@@ -93,6 +128,8 @@ const LoginForm = () => {
                         </FormItem>
                     )}
                 />
+                </>
+            )}
             </div>
             <FormSuccess message={success} />
             <FormError message={error} />
