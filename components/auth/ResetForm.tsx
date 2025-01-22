@@ -10,6 +10,7 @@ import { ResetSchema } from "@/schemas";
 import FormError from "./FormError";
 import FormSuccess from "./FormSuccess";
 import CardWrapper from "../CardWrapper";
+import { reset } from "@/app/actions/reset";
 
 export const ResetForm = () => {
     const [error, setError] = useState<string | undefined>("");
@@ -26,6 +27,13 @@ export const ResetForm = () => {
     const onSubmit = (values: z.infer<typeof ResetSchema>) => {
         setError("");
         setSuccess("");
+        startTransition(() => {
+            reset(values)
+                .then((data) => {
+                    setError(data?.error);
+                    setSuccess(data?.success);
+                });
+        });
     };
     
     return (
