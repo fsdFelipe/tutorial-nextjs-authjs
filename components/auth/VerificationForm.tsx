@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import FormSuccess from "./FormSuccess";
 import FormError from "./FormError";
 import CardWrapper from "../CardWrapper";
+import { Verification } from "@/app/actions/verification";
 
 export const VerificationForm = () => {
     const [error, setError] = useState<string | undefined>();
@@ -19,6 +20,17 @@ export const VerificationForm = () => {
             setError("Missing token!");
             return;
         }
+        Verification(token)
+        .then((data) => {
+            if (data.success) {
+                setSuccess(data.success);
+            } else {
+                setError(data.error || "Ops algo deu errado!");
+            }
+        })
+        .catch(() => {
+            setError("Ops algo deu errado!");
+        })
     }, [token, success, error]);
     
     useEffect(() => {
