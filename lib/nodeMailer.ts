@@ -52,4 +52,30 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     console.error('Erro ao enviar e-mail:', error);
     throw error;
   }
-}  
+}
+
+export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail', // ou outro provedor
+    auth: {
+      user: process.env.EMAIL_USER, // Seu e-mail
+      pass: process.env.EMAIL_PASSWORD, // Senha do app 
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER, // E-mail do remetente
+    to: email, // E-mail do destinatário
+    subject: 'Codigo de autenticação',
+    html: `<p>Seu código 2FA: ${token}</p>`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('E-mail enviado para:', email);
+  } catch (error) {
+    console.error('Erro ao enviar e-mail:', error);
+    throw error;
+  }
+  
+};

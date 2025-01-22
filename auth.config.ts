@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs";
 import Github from 'next-auth/providers/github'
 import Google from 'next-auth/providers/google'
 import { UserRole } from '@prisma/client';
+import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation";
 
 export default {
   adapter: PrismaAdapter(db),
@@ -54,6 +55,15 @@ export default {
 
       if(!userExist?.emailVerified){
         return false
+      }
+
+      if (userExist.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(userExist.id);
+        if (!twoFactorConfirmation) return false;
+        // Delete two factor confirmation for next sign in
+        await db.twoFactorConfirmation.delete({
+          where: { id: twoFactorConfirmation.id }
+        });
       }
       
       return true
