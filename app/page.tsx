@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import LoginButton from "@/components/auth/LoginButton";
+import { LogoutButton } from "@/components/auth/LogoutButton";
 import { Button } from "@/components/ui/button";
 
 export default async function Home() {
@@ -12,7 +13,12 @@ export default async function Home() {
         <p className="text-md font-normal text-gray-200">Bem vindo !</p>
       </h1>
       {session?.user ? (
+        <>
          <p>Olá, bem vindo <span className="font-bold text-red-400">{session.user.name}</span></p>
+         <LogoutButton>
+        <Button variant='secondary'>Sair</Button>
+        </LogoutButton>
+        </>
       ) : (
       <LoginButton>
         <Button variant='secondary'>Sign In</Button>
