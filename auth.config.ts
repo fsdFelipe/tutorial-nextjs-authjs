@@ -45,6 +45,14 @@ export default {
               }
             },
   callbacks: {
+    async signIn({user}) {
+      const userExist = await getUserById(user.id as string);
+      if(!userExist || !userExist.emailVerified){
+        return false
+      }
+      
+      return true
+    },
     // Callback executado quando a sessão é criada ou acessada
     async session({token, session}) {
       // Verifica se existe um token.sub (ID do usuário) e, se existir, atribui a session.user.id
