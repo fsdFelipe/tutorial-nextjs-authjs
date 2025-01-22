@@ -5,10 +5,14 @@ import { db } from "./lib/db";
 import { LoginSchema } from "./schemas";
 import { getUserByEmail } from "./data/user";
 import bcrypt from "bcryptjs";
+import Github from 'next-auth/providers/github'
+import Google from 'next-auth/providers/google'
 
 export default {
   adapter: PrismaAdapter(db),
   providers: [
+    Github,
+    Google,
     CredentialsProvider({
       async authorize(credentials) {
           const validatedFields = LoginSchema.safeParse(credentials);
@@ -27,5 +31,13 @@ export default {
       },
     })
   ],
+  events: {
+    async linkAccount({ user }) {
+    await db.user.update({
+    where: { id: user.id },
+    data: { emailVerified: new Date() }
+              })
+              }
+            },
   session: { strategy: "jwt"},
 } satisfies NextAuthConfig
