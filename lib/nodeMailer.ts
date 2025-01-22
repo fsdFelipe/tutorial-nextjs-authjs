@@ -29,7 +29,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   const domain = process.env.NEXT_PUBLIC_APP_URL;
-  const resetLink = `${domain}/auth/reset?token=${token}`;
+  const resetLink = `${domain}/auth/new-password?token=${token}`;
   const transporter = nodemailer.createTransport({
     service: 'gmail', // ou outro provedor
     auth: {

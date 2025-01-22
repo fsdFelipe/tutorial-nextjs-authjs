@@ -17,6 +17,7 @@ export const authRoutes = [
     '/auth/register',
     '/auth/error',
     '/auth/reset',
+    '/auth/new-password',
 ];
 /**
  * Prefix para api de rotas para autenticação

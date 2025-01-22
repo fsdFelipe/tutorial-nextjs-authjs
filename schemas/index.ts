@@ -40,3 +40,22 @@ export const ResetSchema = z.object({
       message: "Email é obrigatório",
     }),
   });
+
+export const NewPasswordSchema = z.object({
+  password: z.string().min(6, {
+    message: "Minimo de 6 caracteres",
+  }),
+  /* Codigo para definir regra para o usuario criar uma senha forte
+    password: z.string().min(8, { 
+      message: "A senha deve ter pelo menos 8 caracteres" 
+  }).refine((value) => /[A-Z]/.test(value), { 
+      message: "A senha deve ter pelo menos uma letra maiúscula" 
+  }).refine((value) => /[a-z]/.test(value), { 
+      message: "A senha deve ter pelo menos uma letra minúscula" 
+  })
+  .refine((value) => /[0-9]/.test(value), {
+      message: "A senha deve ter pelo menos um número"
+  }).refine((value) => /[!@#$%^&*]/.test(value), {
+      message: "A senha deve ter pelo menos um caractere especial"
+  }), */
+});
