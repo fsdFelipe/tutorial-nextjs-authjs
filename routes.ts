@@ -4,7 +4,8 @@
  * @type {string[]}
  */
 export const publicRoutes = [
-    '/'
+    '/',
+    '/auth/emailverification',
 ];
 /**
  * Lista de paginas usadas para autenticação
