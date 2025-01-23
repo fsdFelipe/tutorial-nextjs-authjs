@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import LoginButton from "@/components/auth/LoginButton";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function Home() {
   const session = await auth()
@@ -24,6 +25,9 @@ export default async function Home() {
         <Button variant='secondary'>Sign In</Button>
       </LoginButton>
       )}
+          <Button variant='secondary'>
+            <Link href='/profile'>Perfil</Link>
+          </Button>
     </div>
   );
 }
