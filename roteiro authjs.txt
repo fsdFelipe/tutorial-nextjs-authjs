@@ -1,0 +1,766 @@
+
+=================={ Autenticação Next.js e Auth.js }===================  
+Roteiro para criar um sistema de autenticação usando Next.js 15, Auth.js, TypeScript, Prisma e MongoDB.  
+
+### Objetivo:  
+Criar um sistema completo de autenticação com suporte a:  
+- Login com e-mail/senha, Google e GitHub.  
+- Verificação de e-mail para restringir o acesso.  
+- Autenticação em duas etapas (2FA).  
+- Controle de acesso com UserRoles (perfis de usuário).  
+
+### Tópicos abordados no tutorial:  
+1. Documentação detalhada do progresso por meio de commits.  
+2. Configuração e uso da biblioteca **shadcn-ui**.  
+3. Integração da biblioteca **Auth.js** para autenticação.  
+4. Implementação de funções de autenticação avançadas, como 2FA e UserRoles.  
+
+----------------------[ Parte I ]----------------------  
+
+* Iniciando o projeto
+
+#### 1. Criar repositório remoto no GitHub:  
+- Acesse o GitHub e crie um repositório com o nome do projeto.  
+
+#### 2. Configurar o projeto localmente:  
+- Escolha a IDE de sua preferência e abra o terminal.  
+- Execute os seguintes comandos:  
+  npx create-next-app@latest [nome-do-projeto]  
+  cd [nome-do-projeto]  
+
+#### 3. Instalar a biblioteca shadcn-ui:
+Siga as instruções oficiais: shadcn-ui installation guide.
+    https://ui.shadcn.com/docs/installation/next
+
+#### 4. Iniciar o servidor de desenvolvimento:
+- No terminal, inicie a aplicação com o comando: 
+  npm run dev
+- Clique no link exibido no terminal para visualizar a aplicação em execução no navegador.
+
+#### 5. Configuração inicial da aplicação:  
+##### a) Editar o arquivo `layout.tsx` da pasta app:  
+- Adicionar a estrutura principal do layout da aplicação, utilizando a tag `<main>` para envolver o conteúdo.  
+- Configurar classes globais para estilização, incluindo largura, altura mínima, gradiente de fundo e centralização do conteúdo.  
+- Definir metadados globais para a aplicação, como título e descrição.  
+
+##### b) Editar o arquivo `page.tsx` da pasta app:  
+- Limpar o conteúdo padrão gerado pelo Next.js.  
+- Criar uma estrutura inicial simples para exibir uma mensagem de boas-vindas ou outra informação básica.  
+- Adicionar um botão
+
+##>Commit 1: Projeto Criado + estrutura inicial com shadcn-ui
+...............................................................
+
+* Pagina Login parte I : Organização Inicial da Estrutura de Login
+
+#### 1. Criar pasta auth dentro da pasta components.  
+- Estrutura: components/auth [para organização componentes relacionados a autenticação ficarão nesta pasta]
+
+#### 2. Criar componente LoginButton.tsx na pasta auth
+- Botão responsavel para redirecionar para pagina de login
+
+#### 3. Criar pasta auth dentro de app 
+- Estrutura: app/auth [para organização paginas relacionadas a autenticação ficarão nesta pasta]
+
+#### 4. Criar pagina login
+- Dentro da pasta app, criar nova pasta chamada login
+- Dentro da pasta login criar arquivo page.tsx
+
+#### 5. Editar page.tsx principal
+- Adicionar LoginButton a pagina principal
+
+##>Commit 2: Pagina Login parte I : Organização Inicial da Estrutura de Login
+.........................................................
+
+* Pagina Login parte II : Iniciado Formulario de Login
+
+#### 1. Instalar componente card de shadcn-ui
+- https://ui.shadcn.com/docs
+
+#### 2. Criar componente cardWrapper dentro da components(layout pardrão para os cards)
+
+#### 3. Criar o componente LoginForm dentro da pasta auth
+- caminho: components/auth
+
+### 4. Editar pagina login
+- arquivo page.tsx da pasta login
+  - importar o componente LoginForm
+
+##>Commit 3: Pagina Login parte II : Iniciado Formulario de Login
+...................................................................
+
+* Pagina Login parte III : Adicionando Login Social
+
+#### 1. Instalar react-icons
+- no terminal comando:
+  npm i react-icons
+
+#### 2. Criar componente LoginSocial dentro da pasta auth
+Componente responsável por implementar o login com provedores de terceiros, como Google e GitHub.
+- caminho: components/auth
+
+#### 3. Editar componente CardWrapper
+- aplicar estilização inicial
+- adicionar componente LoginSocial
+
+##>Commit 4: Pagina Login parte III : Adicionando Login Social
+.................................................................................
+
+* Pagina Login parte IV : Formulário de login
+
+#### 1. Instalar form e input de shadcn-ui
+- https://ui.shadcn.com/docs
+
+#### 2. Criar pasta schemas na pasta raiz do projeto
+- dentro desta pasta criar arquivo index.ts
+- no arquivo index.ts, criar e exportar o objeto LoginSchema, que será usado para validar os dados do login (e-mail e senha).
+
+#### 3. Editar LoginForm
+- inicializar o hook useForm:
+  - Configurar o hook useForm para utilizar o schema de validação LoginSchema, 
+  garantindo que os dados do formulário sejam validados com base no objeto criado.
+- adicionar a função onSubmit que será chamada ao submeter o formulário
+  Exibir no console do navegador os valores fornecidos pelo usuário, 
+  como exemplo inicial de manipulação dos dados do formulário.
+- criar o formulário de login 
+  - usar o componente Form de shadcn-ui
+  - adicionar os campos para o usuario inserir os dados
+  - adicionar o botão para chamar a função onSubmit
+
+##>Commit 5: Pagina Login parte IV : Formulário de Login
+......................................................................
+
+* Pagina Login parte V : Componentes FormSuccess e FormError
+
+#### 1. Criar componentes FormError e FormSuccess dentro da pasta auth
+- caminho components/auth
+- esses componentes exibirão a mensagem respectiva ao resultado da tentativa de login
+
+#### 2. Editar componente LoginForm
+- adicionar os componentes FormSuccess e FormError
+
+##>Commit 6: Pagina Login parte V : Componentes FormSuccess e FormError
+
+----------------------[ Parte II ]----------------------  
+
+* Pagina para cadastro parte I : Criar pagina e formulário de cadastro
+
+#### 1. Criar componente RegisterForm dentro da pasta auth de components
+- caminho: components/auth
+
+#### 2. Criar pagina register
+- Dentro da pasta app, criar nova pasta chamada register
+- Dentro da pasta register criar arquivo page.tsx
+
+##>Commit 7: Pagina de cadastro parte I : Criar pagina e formulário de cadastro
+................................................................................
+
+* Pagina para cadastro parte II : RegisterSchema e formulário de cadastro
+
+#### 1. Editar index.ts da pasta schemas
+- criar e exportar o objeto RegisterSchema, que será usado para validar os dados para cadastro de usuário
+
+#### 2. editar componente RegisterForm (usar o LoginForm como base)
+- inicializar o hook useForm:
+  - Configurar o hook useForm para utilizar o schema de validação RegisterSchema, 
+  garantindo que os dados do formulário sejam validados com base no objeto criado.
+- adicionar a função onSubmit que será chamada ao submeter o formulário
+  Exibir no console do navegador os valores fornecidos pelo usuário, 
+  como exemplo inicial de manipulação dos dados do formulário.
+- criar o formulário de login 
+  - usar o componente Form de shadcn-ui
+  - adicionar os campos para o usuario inserir os dados
+  - adicionar o botão para chamar a função onSubmit
+
+##>Commit 8: Pagina de cadastro parte II : RegisterSchema e formulário de cadastro
+....................................................................................
+
+* Conexão com banco de dados MongoDB atlas
+
+#### 1. Instalar prisma
+- no terminal comando: 
+  npm --legacy-peer-deps install @prisma/client @auth/prisma-adapter
+  npx prisma init
+    [será adcionado ao projeto a pasta prisma e o arquivo .env que armazenará variáveis sensíveis, como a URL de conexão.]
+
+#### 2. Pergar url de conexão e senha no site no mongodb colar no arquivo .env
+- criar conta e acessar o site oficial do mongo atlas link:
+  https://account.mongodb.com/account/login
+- logado no site criar novo projeto
+  Página projects - botão New projects
+  criar novo cluster
+  copiar a senha gerada para conectar com o cluster 
+  [clicar no botão create database user]
+  após cluster criado, pegar string de conexão
+  botão get connection string
+  colar a string de conexão no arquivo .env 
+  //para dar um nome para seu banco dedos editar a string nesta parte (... .mongodb.net/[nome-do-db]?retryWrites= ...)
+  
+  substituir: <db_password> pela senha gerada na hora que foi criado o cluster
+
+#### 3. Criar o arquivo db.ts dentro da pasta lib
+- pegar o codigo deste arquivo no site oficial do Auth.js
+  https://authjs.dev/getting-started
+  link direto para pagina do codigo:
+  https://authjs.dev/getting-started/adapters/prisma
+  [esse codigo é o responsavel por conectar o bando de dados com a nossa aplicação]
+
+#### 4. Editar arquivo schema.prisma da pasta prisma
+- modificar: provider = "postgresql" para : provider = "mongodb"
+  [ou colocar o bando de dados que será usado]
+- adicionar os models(tabelas) User e account
+
+#### 5. Gerar as tabelas e enviar para o MongoDB atlas
+- no terminal usar os comandos para gerar as tabelas
+  npx prisma generate
+  - comando para abrir o bd local prisma
+  npx prisma studio
+  - comando para enviar as tabelas para o mongodb atlas
+  npx prisma db push
+
+##>Commit 9: Conexão com o Banco de dados MongoDB atlas
+.....................................................................
+
+* Registrando o novo usuario no banco de dadoss
+
+#### 1. Instalar dependencia bcrypt (biblioteca para criptografia)
+- no terminal comando:
+  npm --legacy-peer-deps install bcryptjs @types/bcryptjs
+
+#### 2. Criar pasta data na pasta raiz do projeto
+- dentro desta pasta criar arquivo user.ts [responsável pelas consultas ao banco de dados]
+
+#### 3. Criar pasta actions dentro de app
+- dentro desta pasta criar arquivo register.ts
+
+#### 4. Editar componente RegisterForm
+- atualizar a função onSubmit para usar a função register importada do arquivo resgister.ts q criamos
+
+Opicional: (Modificar index.ts da pasta schemas apenas para não precisar de senha forte)
+
+##>Commit 10: Registrando o novo usuario no banco de dados
+
+----------------------[ Parte III ]---------------------- 
+
+* Login parte I : Action login
+
+#### 1. Criar arquivo login.ts na pasta actions
+
+#### 2. Editar LoginForm.tsx
+- atualizar a função onSubmit para usar a função login importada do arquivo login.ts q criamos 
+
+##>Commit 11: Login parte I : Action login
+................................................................
+
+* Login parte II : Configuração inicial do Authjs
+
+#### 1. Instalar Authjs e secret seguir link: https://authjs.dev/getting-started/installation
+
+#### 2. Criar arquivo auth.ts na pasta raiz do projeto
+
+#### 3. Criar pasta api dentro da pasta app
+- criar pasta auth dentro da pasta api
+- dentro da pasta auth criada agora criar pasta [...nextauth] 
+- nesta ultima pasta criar arquivo route.ts
+caminho: app/api/auth/[...nextauth]/route.ts 
+
+##>Commit 12: Login parte II : Configuração inicial do Authjs
+........................................................................
+
+* Login parte III : Configuração Authjs - auth.config, middleware e routes
+
+#### 1. Criar arquivo auth.config.ts na pasta raiz do projeto
+
+#### 2. Criar arquivo routes.ts na pasta raiz do projeto
+
+#### 3. Criar arquivo middleware.ts na pasta raiz do projeto
+
+#### 4. Editar arquivo auth.ts
+
+##>Commit 13: Login parte III : Configuração Authjs - auth.config, middleware e routes
+.........................................................................................
+
+* Login parte IV : Aplicada a funcionalidade login
+
+#### 1. Editar arquivo auth.config.ts
+
+#### 2. Editar arquivo auth.ts
+
+#### 3. Editar login.ts da pasta actions
+
+#### 4. Editar page.tsx principal (exibir usuario logado ou botão signIn)
+
+##>Commit 14: Login parte IV : Aplicada a funcionalidade login
+.....................................................................................
+
+* Logout
+
+#### 1. Editar auth.ts
+
+#### 2. Criar arquivo logout.ts na pasta actions
+
+#### 3. Criar componente LogoutButton na pasta auth de components
+
+#### 4. Editar page.tsx principal (exibir botao logout caso usuario logado)
+
+##>Commit 15: Logout
+.........................................................................................
+
+* Login com Google e Github
+
+- doc oficial authjs: https://authjs.dev/getting-started/authentication/oauth
+#### 1. Criar projeto no console google
+- https://console.developers.google.com/project
+  novo projeto
+  abrir o menu lateral
+  - APIs e serviços ativados - Tela de permissão OAuth
+    escolher opção externo e criar
+  no menu lateral:
+  - Credenciais > criar credenciais > ID do cliente do OAuth
+  Tipo de aplicativo: Aplicativo da web
+  Nome: definir um nome
+  URIs de redirecionamento autorizados
+  adicionar URI :[origin]/api/auth/callback/google 
+  (uri pega na doc do Authjs , substituir [origin] por http://localhost:3000)
+  uri final: http://localhost:3000/api/auth/callback/google
+  criar
+  apos criado copiar o id do cliente e a chave secreta do cliente colar no arquivo .env
+  - no arquivo .env criar as variaves q armazenarao o id e a chave secreta do cliente, passanod o respectivo valor
+    AUTH_GOOGLE_ID='CLIENT_ID criado'
+    AUTH_GOOGLE_SECRET='CLIENT_SECRET criado'
+
+#### 2. Criar OAuth app no site do Github
+- acessar sua conta github > settings> Developer settings > OAuth Apps > New OAuth App
+  Application name : definir um nome
+  Homepage URL: http://localhost:3000/
+  Authorization callback URL: http://localhost:3000/api/auth/callback/github
+
+  no arquivo .env
+  AUTH_GITHUB_ID= 'clientid gerado no site do github'
+  AUTH_GITHUB_SECRET= 'secret gerado no site do github'
+    
+#### 3. Editar auth.config.ts
+
+#### 4. Editar componente LoginSocial.tsx
+
+##>Commit 16: Login com Google e Github
+........................................................................................
+
+* Adicionando UserRole aos usuarios
+
+#### 1. Editar schema.prisma
+  adcionar campo role no model User, e criar enum UserRole
+
+#### 2. Atualizar o MongoDB atlas
+- no terminal usar os comando:
+  npx prisma generate
+- comando para enviar as tabelas para o mongodb atlas:
+  npx prisma db push
+
+#### 3. Criar arquivo next-auth.d.ts na pasta raiz do projeto
+[usado para estender os tipos do NextAuth, garantindo que o TypeScript reconheça campos personalizados, como role, no objeto da sessão]
+
+##>Commit 17: Adicionando UserRole aos usuarios
+.....................................................................
+
+* Pagina error para autenticação
+
+#### 1. Criar componente ErrorCard dentro da pasta auth
+caminho: components/auth
+
+#### 2. Criar pasta error dentro da pasta auth de app
+caminho: app/auth
+  dentro da pasta error criar arquivo page.tsx
+
+#### 3. Editar routes.ts
+
+#### 4. Editar auth.config.ts
+- para testar a pagina error comentar linha : session: { strategy: "jwt"}, 
+  logar com Google ou Github apenas para ver a pagina error apos ver o erro descomente a linha
+
+##>Commit 18: Pagina error para autenticação
+..........................................................
+
+* Session e callbacks
+
+#### 1. Editar arquivo user.ts da pasta data
+- adicionado o metodo getById para buscar usuario po id
+
+#### 1. Editar arquivo auth.config.ts
+
+##>Commit 19: Session e callbacks
+........................................................................
+
+* Email verificado? parte I : iniciando
+
+##### 1. Editar auth.config.ts
+
+##>commit 20 - Email verificado? parte I : iniciando
+..........................................................................
+
+* Email verificado? parte II : gerar e verificar token para verificação de email
+
+#### 1. Instalar uuid 
+- no terminal comando: 
+  npm --legacy-peer-deps i uuid @types/uuid
+
+#### 2. Editar schema.prisma
+- adcionar model VerificationTtoken
+
+#### 3. Gerar a tabela e enviar para o MongoDB atlas
+- no terminal usar os comandos para gerar as tabelas
+  npx prisma generate
+- comando para verficar se foram geradas as tabelas
+  npx prisma studio
+- comando para enviar as tabelas para o mongodb atlas
+  npx prisma db push
+
+#### 4. Criar arquivo verificationToken.ts na pasta data
+- exportar as funçoes getVerificationTokenByEmail e getVerificationTokenByToken
+
+#### 5. Criar arquivo tokens.ts na pasta lib
+- arquivo responsavel por gerar e deletar tokens.
+
+#### 6. Editar register.ts de actions
+- add a linha para gerar o token apos o usuario se cadastrar
+- add a linha para exibir o token gerado no console
+
+##>commit 21 - Email verificado? parte II : gerar e verificar token para verificação de email
+..............................................................................................
+
+* Email verificado? parte III : não permitir login para email não verificado
+
+#### 1. Editar login.ts de actions
+
+#### 2. Editar auth.config.ts
+
+##>commit 22 - Email verificado? parte III : não permitir login para email não verificado
+..................................................................................................
+
+* Email verificado? parte IV : enviar email de verifação com nodeMailer
+
+#### 1. Instalar dependencia nodemailer :
+- no terminal comandos:  
+  npm --legacy-peer-deps install nodemailer
+  npm --legacy-peer-deps i --save-dev @types/nodemailer
+
+#### 2. Gerando senha do app para enviar email com gmail e nodeMailer
+- acessar gerenciamento de conta google>segurança>senhas de app (agilizar pesquisando "senhas de app" na caixa de pesquisa)
+  criar um nome para seu app, será gerada uma senha, copie para colar no arquivo .env
+  no arquivo .env criar as variaves do gmail o email,
+  EMAIL_USER='xksilent07@gmail.com' 
+  EMAIL_PASSWORD='senha do app(gerada na conta google)'
+  - criar tambem uma variavel para url da aplicação
+  NEXT_PUBLIC_APP_URL='http://localhost:3000'
+
+#### 3. Criar o arquivo nodeMailer.ts na pasta lib
+
+#### 4. Editar login.ts de actions
+
+#### 5. Editar register.ts de actions
+
+##>commit 23 - Email verificado? parte IV : enviar email de verifação com nodeMailer
+..........................................................................................
+
+* Email verificado? parte V : pagina de verificação e formulario
+
+#### 1. Instalar react-spinners
+- no terminal comando: 
+  npm --legacy-peer-deps i react-spinners
+
+#### 2. Editar routes.ts
+
+#### 3. Criar componente verificationForm.tsx, em components/auth
+
+#### 4. Criar pasta emailverification dentro da pasta auth de app
+camninho: app/auth
+  dentro desta pasta criar arquivo page.tsx
+  importar formulario verificationForm
+
+##>commit 24 - Email verificado? parte V : pagina de verificação e formulario
+.................................................................................................
+
+* Email verificado? Finalizado 
+  
+#### 1. Criar arquivo verification.ts na pasta actions
+
+#### 2. Criar arquivo accounts.ts na pasta data
+
+#### 3. Editar login.ts da pasta actions
+
+#### 4. Editar verificationForm
+
+##>commit 25 - Email verificado? Finalizado
+..............................................................................................
+
+* Resetar senha parte I : model, pagina e formulario de para resetar senha
+
+#### 1. Editar schema.prisma
+  - adicionar model PasswordResetToken
+
+#### 2. Atualizar o MongoDB atlas
+- no terminal usar os comando:
+  npx prisma generate
+- comando para verficar se foram geradas as tabelas (opcional)
+  npx prisma studio
+- comando para enviar as tabelas para o mongodb atlas
+  npx prisma db push
+
+#### 3. Editar arquivo index.ts da pasta schemas
+- criar e exportar o objeto ResetSchema
+ 
+#### 4. Criar componente ResetForm na pasta auth de components
+caminho : components/auth
+
+#### 5. Criar pasta reset dentro da pasta auth de app
+caminho: app/auth
+  dentro desta pasta criar arquivo page.tsx
+
+#### 6. Editar LoginForm
+- adicionar botão esqueceu a senha?
+
+#### 7. Editar routes.ts
+
+##>commit 26 - Resetar senha parte I : model, pagina e formulario de para resetar senha
+..........................................................................................
+
+* Resetar senha parte II : gerar token para resetar senha
+
+#### 1. Criar arquivo passwordResetToken.ts na pasta data
+
+#### 2. Editar tokens.ts da pasta lib
+
+#### 3. Criar arquivo reset.ts na pasta actions
+
+#### 4. Editar componente ResetForm
+
+##>commit 27 - Resetar senha parte II : gerar token para resetar senha
+.........................................................................................
+
+* Resetar senha parte III : enviar email para resetar a senha
+
+#### 1. Editar arquivo nodeMailer
+- criar e exportar o objeto sendPasswordResetEmail
+
+#### 2. Editar arquivo reset.ts
+
+##>commit 28 - Resetar senha parte III : enviar email para resetar a senha
+...........................................................................................
+
+* Resetar senha parte IV : pagina e formulário para nova senha
+
+#### 1. Editar arquivo index.ts da pasta schemas
+- criar e exportar o objeto NewPasswordSchema
+
+#### 2. Criar componente NewPasswordForm na pasta auth de components
+caminho: components/auth
+
+#### 3. Criar pasta new-password na pasta auth de app
+caminho: app/auth
+  dentro desta pasta criar arquivo page.tsx
+
+#### 4. Editar nodeMailer
+- editar url de resetLink (redirecionando para a pagina new-password)
+
+#### 5. Editar routes.ts
+
+##>commit 29 - Resetar senha parte IV : pagina e formulário para nova senha
+......................................................................................
+
+* Resetar senha : Finalizado
+
+#### 1. Criar arquivo new-password.ts na pasta actions
+
+#### 2 Editar componente NewPasswordForm
+
+(para testar modificar exipiração do token para reset de senha par 1 minuto
+  no arquivo token.ts)
+  testes formulario para email de reset senha: email inexistente,
+    campo email vazio,
+  testes formulario para nova senha
+    na barrra de url, recortar a parte do token 
+    na barra de url mudar um caracter da url
+    esperar o tempo passar para o token expirar
+
+##>commit 30 - Resetar senha : Finalizado
+..............................................................................................
+
+* Autenticação 2 fatores parte I : gerar token
+
+#### 1. Editar schema.prisma
+- adicionar models: TwoFactorToken e TwoFactorConfirmation
+- atualizar model user
+
+#### 2. Atualizar o MongoDB atlas
+- no terminal usar os comando :
+  npx prisma generate
+- comando para enviar as tabelas para o mongodb atlas:
+  npx prisma db push
+
+#### 3. Criar arquivo two-factor-confirmation.ts na pasta data
+
+#### 4. Criar arquivo two-factor-token.ts na pasta data
+
+#### 5. Editar arquivo tokens.ts
+
+##>commit 31 - Autenticação 2 fatores parte I : gerar token
+....................................................................................  
+
+* Autenticação 2 fatores parte II : enviar email com o codigo de autenticação
+
+#### 1. Editar arquivo nodeMailer.ts
+
+#### 2. Editar arquivo auth.config.ts
+
+#### 3. Editar arquivo login.ts da pasta actions
+
+#### 4. No mongodb add o campo isTwoFactorEnabled como true em um usuario para habilitar 2FA
+
+##>commit 32 - Autenticação 2 fatores parte II : enviar email com o codigo de autenticação
+...........................................................................................
+
+* Autenticação 2 fatores parte II Finalizado
+
+#### 1. Editar arquivo index.ts da pasta schemas
+- add campo code no objeto LoginSchema
+
+#### 2. Editar login.ts da pasta actions
+
+#### 3. Editar componente LoginForm
+
+##>commit 33 - Autenticação 2 fatores Finalizado
+................................................................................................
+
+* Pagina perfil parte I : inicio
+
+#### 1. Criar pasta hooks na pasta raiz do projeto
+- dentro dessa pasta criar arquivo use-current-user.ts
+
+#### 2. Criar pasta (protected) dentro de app,
+caminho: app/(protected) 
+criar arquivo layout.tsx
+
+#### 3. Criar a pasta profile dentro da pasta (protected)
+- dentro desta pasta criar page.tsx
+
+#### 4. Editar page.tsx principal
+
+##>commit 34 - Pagina perfil parte I : inicio
+..........................................................................................
+
+* Session : adcionando infos do usuario ao token
+
+#### 1. Editar arquivo next-auth.d.ts
+
+#### 2. Editar arquivo auth.config.ts
+
+##>commit 35 - Session : adcionando infos do usuario ao token
+...................................................................................
+
+* Controle de acesso às páginas baseado em roles: USER/ADMIN
+
+#### 1. Criar arquivo use-current-role.ts na pasta hooks
+
+#### 2. Criar componente RoleGate.tsx em components/auth
+
+#### 3. Criar pagina dashboard na pasta protected
+
+#### 4. Editar pagina principal
+- adicionar botão dashboard visivel apenas para admins
+
+#### 5. Modificar a role de um usuario para ADMIN pelo site do MongoDB atlas
+- testar acessar a pagina dashboard, usando uma conta com role = USER
+- testar acessar a pagina dashboard, usando uma conta com role = ADMIN
+
+##>commit 36 - Controle de acesso às páginas baseado em roles: USER/ADMIN
+.......................................................................................
+
+* Pagina perfil para usuario
+
+#### 1. Criar arquivo use-current-provider.ts em hooks
+
+#### 2. Editar index.ts da pasta schemas
+- criar e exportar o objeto SettingsSchema
+
+#### 3. Instalar Switch de shadcn-ui
+- comando:
+  npx shadcn@latest add switch
+
+#### 4. Editar arquivo next.config.ts (add hosts das imagens dos provedores google e github)
+
+#### 5. Editar pagina perfil
+
+#### 6. Colocar uma imagem para usuario na pasta /images (dentro da pasta public criar a pasta images)
+
+##>commit 37 - Pagina perfil parte II : aplicado estilo e exibindo dados
+..............................................................................................................
+
+* Updade de usuario
+
+#### 1. Editar arquivo auth.ts
+
+#### 2. Criar arquivo auth.ts na pasta lib
+
+#### 3. Criar o arquivo updateUserSession.ts na pasta lib
+
+#### 4. Criar arquivo userSettings.ts na pasta actions
+
+#### 5. Editar page.tsx de perfil
+
+#### 6. Editar index.ts de schemas
+- adcionar .refine ao SettingsSchema
+
+#### 6. Editar auth.config.ts
+
+##>commit 38 - Updade de usuario
+.............................................................................................................
+
+* Pagina dashboard parte I : layout
+
+#### 1. Copiar e colar o arquivo layout.tsx da pasta (protected) na pasta dashboard
+- fazer alterações
+
+#### 5. Editar pagina dashboard
+
+##>commit 39 - Pagina dashboard parte I : Layout
+............................................................................................................
+
+* Pagina dashboard parte II : exibir usuarios cadastrados
+
+#### 1. Editar index.ts da pasta schemas
+- criar e exportar o objeto AdminSettingsSchema
+
+#### 2. Editar user.ts da pasta data
+- criar função que busca todos usuarios no banco de dados
+
+#### 3. Criar arquivo users.ts dentro da pasta actions
+
+#### 4. Editar pagina dashboard
+
+##>commit 40 - Pagina dashboard parte II : exibir usuarios cadastrados
+................................................................................................................
+
+* Pagina dashboard parte III : estilizando a pagina dashboard
+
+#### 1. Instalar Select de shadcn-ui
+
+#### 2. Editar pagina dashboard
+
+##>commit 41 - Pagina dashboard parte III : estilizando a pagina dashboard
+.........................................................................
+
+* Pagina dashboard parte IV : Selecionando usario para editar
+
+#### 1. Editar pagina dashboard
+
+##>commit 42 - Pagina dashboard parte IV : Selecionando usuario para editar
+............................................................................
+
+* Pagina dashboard parte V : Fazendo update do usuario selecionado
+
+#### 1. Criar arquivo AdminActions.ts na pasta actions
+
+#### 1. Editar pagina dashboard
+
+##>commit 43 - Pagina dashboard parte V : Fazendo update do usuario selecionado
+...................................................................................................
