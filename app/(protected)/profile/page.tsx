@@ -16,6 +16,7 @@ import React, { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod';
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
+import { settings } from '@/app/actions/userSettings';
 
 const PerfilPage = () => {
   const user = useCurrentUser()
@@ -35,6 +36,22 @@ const PerfilPage = () => {
             isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined,
         }
     });
+
+    const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
+      startTransition(() => {
+          settings(values)
+              .then((data) => {
+                  if (data?.error) {
+                      setError(data?.error);
+                  }
+                  if (data?.success) {
+                      setSuccess(data.success);
+                  }
+              })
+              .catch(() => setError("Something went wrong!"));
+      });
+  }
+
     const imageUrl = user?.image || '/images/sem foto.gif';
 
   return (
@@ -61,7 +78,7 @@ const PerfilPage = () => {
         </CardContent>
         <CardContent>
             <Form {...form}>
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)} >
                     <div className="space-y-4">
                         <FormField
                             control={form.control}
@@ -196,19 +213,15 @@ const PerfilPage = () => {
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
-                </form>
-            </Form>
-        </CardContent>
-            <CardFooter>
-                <div className="w-full flex flex-row items-center justify-between">
-                <Button
+                    <Button
                     disabled={isPending}
                     type="submit"
                     >
-                    Salvar
-                </Button>
-                </div>
-            </CardFooter>
+                      Salvar
+                    </Button>
+                </form>
+            </Form>
+        </CardContent>
       </Card>
     </div>
   )
