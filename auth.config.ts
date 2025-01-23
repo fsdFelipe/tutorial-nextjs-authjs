@@ -9,6 +9,7 @@ import Github from 'next-auth/providers/github'
 import Google from 'next-auth/providers/google'
 import { UserRole } from '@prisma/client';
 import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation";
+import { getAccountByUserId } from "./data/accounts";
 
 export default {
   adapter: PrismaAdapter(db),
@@ -83,7 +84,7 @@ export default {
         return session
     },
     // Callback executado quando um novo JWT é gerado ou acessado
-    async jwt({token}) {
+    async jwt({token, account}) {
       // Verifica se existe token.sub (ID do usuário). Se não existir, retorna o token original
       if(!token.sub) return token;
       // Busca o usuário no banco de dados pelo ID contido em token.sub
@@ -92,8 +93,19 @@ export default {
       if (!userExist) {
         return token
       };
-      // Adiciona a role do usuário ao token
-      token.role = userExist.role
+
+      const accountExist = await getAccountByUserId(userExist.id);
+      
+      token.name = userExist.name // Adiciona o nome do usuário ao token
+      token.email = userExist.email // Adiciona o email do usuário ao token
+      token.isTwoFactorEnabled = userExist.isTwoFactorEnabled // Adiciona a informação de two factor ao token
+      token.isOAuth = !!accountExist // Adiciona a informação de OAuth ao token 
+      token.role = userExist.role // Adiciona a role do usuário ao token
+
+      if(account){
+        token.provider = account.provider // Adiciona o provider ao token
+      }
+
       // Retorna o token modificado
       return token 
   },
