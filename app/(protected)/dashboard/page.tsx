@@ -1,4 +1,5 @@
 'use client'
+import { adminUpdateUser } from '@/app/actions/AdminActions';
 import { getAllUsers } from '@/app/actions/users';
 import FormError from '@/components/auth/FormError';
 import FormSuccess from '@/components/auth/FormSuccess';
@@ -6,11 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { AdminSettingsSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserRole } from '@prisma/client';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@radix-ui/react-select';
 import Image from 'next/image';
 import React, { useEffect, useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form';
@@ -31,7 +32,14 @@ const DashboardPage = () => {
         setUsers(allUsers);
       };
       fetchUsers();
-    }, []);
+
+      if (editSuccessMessage) {
+        const timeout = setTimeout(() => {
+          setEditSuccessMessage(null);
+        }, 15000);
+        return () => clearTimeout(timeout);
+      }
+    }, [editSuccessMessage]);
 
     const form = useForm<z.infer<typeof AdminSettingsSchema>>({
       resolver: zodResolver(AdminSettingsSchema)
@@ -43,6 +51,30 @@ const DashboardPage = () => {
       form.reset(user)
     };
 
+    const onSubmit = (values: z.infer<typeof AdminSettingsSchema>) => {
+      // Atualiza os dados do usuário alterado no estado
+      setUsers((prev) =>
+        prev.map((user) => (user.id === editingUserId ? { ...user, ...values } : user))
+      );
+      if (editingUserId) {
+        startTransition(() => {
+          console.log('dados enviados para backend id update:' + editingUserId, 'dados:' + JSON.stringify(values))
+          adminUpdateUser(editingUserId, values)
+              .then((data) => {
+                  if (data?.error) {
+                      setError(data.error);
+                  }
+                  if (data.success) {
+                      setSuccess(data.success);
+                  }
+              })
+              .catch(() => setError("Something went wrong!"));
+      });  
+      }
+      setEditSuccessMessage(`Usuário ${values.name} foi editado com sucesso!`);
+      setEditingUserId(null); // Sai do modo de edição
+    };
+
     const getImageUrl = (user: z.infer<typeof AdminSettingsSchema>) => user.image || '/images/sem foto.gif';
 
   return (
@@ -50,7 +82,7 @@ const DashboardPage = () => {
     {editingUserId ? (
       // Renderiza apenas o formulário de edição quando editingUserId não é null
       <Form {...form}>
-        <form className="mt-4">
+        <form className="mt-4 w-[400px]" onSubmit={form.handleSubmit(onSubmit)}>
           <Card className='w-full'>
             <CardHeader className='text-center'>
               <h1 className='font-bold text-xl'>Editar Usuário</h1>
