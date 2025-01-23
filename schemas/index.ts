@@ -89,3 +89,12 @@ export const SettingsSchema = z.object({
     message: "Password is required!",
     path: ["password"]
   })
+
+  export const AdminSettingsSchema = z.object({
+    id: z.string(),
+    name: z.optional(z.string()),
+    image: z.optional(z.string().nullable().optional()),
+    isTwoFactorEnabled: z.optional(z.boolean()),
+    role: z.enum([UserRole.ADMIN, UserRole.USER]),
+    email: z.optional(z.string().email()),
+  })
