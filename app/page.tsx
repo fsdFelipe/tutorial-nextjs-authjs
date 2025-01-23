@@ -15,7 +15,13 @@ export default async function Home() {
       </h1>
       {session?.user ? (
         <>
-         <p>Olá, bem vindo <span className="font-bold text-red-400">{session.user.name}</span></p>
+         <p>Olá, bem vindo <span className="font-bold text-red-400">{session.user.name}</span>
+          { session.user.role === 'ADMIN' ? ( 
+            <Button className="ml-2 bg-zinc-500">
+              <Link href='/dashboard'>Dashboard</Link>
+            </Button>
+            ): null }
+         </p>
          <LogoutButton>
         <Button variant='secondary'>Sair</Button>
         </LogoutButton>
